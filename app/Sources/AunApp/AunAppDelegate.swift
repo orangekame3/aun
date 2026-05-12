@@ -24,7 +24,9 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
         keyboardMonitor = KeyboardMonitor { [weak self] action in
             self?.handle(action)
         }
-        keyboardMonitor?.start()
+        if keyboardMonitor?.start() == false {
+            showStatus("Input Monitoring permission needed")
+        }
         startFocusedTextPolling()
     }
 
@@ -57,7 +59,9 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
                 return
             }
             AunTelemetry.suggestionAccepted(characterCount: suggestion.count)
-            _ = contextReader.insertTextAtFocus(suggestion)
+            if !contextReader.insertTextAtFocus(suggestion) {
+                AunTelemetry.suggestionInsertionFailed()
+            }
             hideSuggestion()
         case .dismiss, .clear:
             pendingInlineSuggestion?.cancel()

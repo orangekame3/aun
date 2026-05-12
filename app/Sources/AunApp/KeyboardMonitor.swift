@@ -25,9 +25,14 @@ final class KeyboardMonitor {
         stateLock.unlock()
     }
 
-    func start() {
+    @discardableResult
+    func start() -> Bool {
         guard eventTap == nil else {
-            return
+            return true
+        }
+
+        if !CGPreflightListenEventAccess() {
+            _ = CGRequestListenEventAccess()
         }
 
         let mask = CGEventMask(1 << CGEventType.keyDown.rawValue)
@@ -41,7 +46,8 @@ final class KeyboardMonitor {
             callback: KeyboardMonitor.eventTapCallback,
             userInfo: refcon
         ) else {
-            return
+            AunTelemetry.keyboardMonitorFailed()
+            return false
         }
 
         eventTap = tap
@@ -51,6 +57,8 @@ final class KeyboardMonitor {
             CFRunLoopAddSource(CFRunLoopGetMain(), runLoopSource, .commonModes)
         }
         CGEvent.tapEnable(tap: tap, enable: true)
+        AunTelemetry.keyboardMonitorStarted()
+        return true
     }
 
     func stop() {

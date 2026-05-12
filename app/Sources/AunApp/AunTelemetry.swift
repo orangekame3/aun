@@ -13,6 +13,14 @@ enum AunTelemetry {
         logger.debug("key_action=\(String(describing: action), privacy: .public)")
     }
 
+    static func keyboardMonitorStarted() {
+        logger.info("keyboard_monitor_started")
+    }
+
+    static func keyboardMonitorFailed() {
+        logger.warning("keyboard_monitor_failed")
+    }
+
     static func suggestionScheduled(delayMs: Int) {
         logger.debug("suggestion_scheduled delay_ms=\(delayMs, privacy: .public)")
     }
@@ -27,6 +35,10 @@ enum AunTelemetry {
 
     static func suggestionAccepted(characterCount: Int) {
         logger.info("suggestion_accepted chars=\(characterCount, privacy: .public)")
+    }
+
+    static func suggestionInsertionFailed() {
+        logger.warning("suggestion_insertion_failed")
     }
 
     static func configRejected(reason: String) {

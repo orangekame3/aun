@@ -45,7 +45,10 @@ Rebuild from a clean app bundle and reinstall:
 make clean-install
 ```
 
-Then allow Aun in `System Settings > Privacy & Security > Accessibility`.
+Then allow Aun in:
+
+- `System Settings > Privacy & Security > Accessibility`
+- `System Settings > Privacy & Security > Input Monitoring`
 
 Open TextEdit or another editable app, type a few characters, pause briefly, and press `Tab` to accept the suggestion.
 
