@@ -102,6 +102,7 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
+        let contextKey = textKey(for: context)
         let fallback = developmentSuggestion(for: context)
         if !fallback.isEmpty {
             AunTelemetry.suggestionShown(characterCount: fallback.count)
@@ -120,6 +121,11 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
             }
 
             await MainActor.run {
+                guard self.lastFocusedTextKey == contextKey else {
+                    AunTelemetry.suggestionSuppressed(reason: "stale_context")
+                    return
+                }
+
                 guard let suggestion = generated, !suggestion.isEmpty else {
                     if fallback.isEmpty {
                         AunTelemetry.suggestionSuppressed(reason: "empty_suggestion")
@@ -210,16 +216,11 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
 
     private func observeFocusedTextChange() {
         guard let context = contextReader.readFocusedContext(typingSpeedCps: currentTypingSpeedCps()) else {
+            hideSuggestion()
             return
         }
 
-        let textKey = [
-            context.appName,
-            context.windowTitle ?? "",
-            context.beforeCursor,
-            context.afterCursor,
-            context.selectedText ?? ""
-        ].joined(separator: "\u{1f}")
+        let textKey = textKey(for: context)
 
         guard textKey != lastFocusedTextKey else {
             return
@@ -234,6 +235,16 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
         recordTypingEvent()
         scheduleInlineSuggestion()
         hideSuggestion()
+    }
+
+    private func textKey(for context: FocusedContext) -> String {
+        [
+            context.appName,
+            context.windowTitle ?? "",
+            context.beforeCursor,
+            context.afterCursor,
+            context.selectedText ?? ""
+        ].joined(separator: "\u{1f}")
     }
 
     private func showStatus(_ text: String) {

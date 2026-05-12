@@ -53,18 +53,10 @@ final class GhostOverlayPanel: NSPanel {
 
     func hideSuggestion() {
         let signpost = AunTelemetry.overlayHideStarted()
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.04
-            animator().alphaValue = 0
-        } completionHandler: { [weak self] in
-            AunTelemetry.overlayHideEnded(signpost)
-            DispatchQueue.main.async {
-                MainActor.assumeIsolated {
-                    self?.orderOut(nil)
-                }
-            }
-        }
         currentSuggestion = ""
         label.stringValue = ""
+        alphaValue = 0
+        orderOut(nil)
+        AunTelemetry.overlayHideEnded(signpost)
     }
 }
