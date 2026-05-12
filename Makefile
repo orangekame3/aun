@@ -1,4 +1,10 @@
 SHELL := /usr/bin/env bash
+export AUN_BUNDLE_NAME
+export AUN_CODESIGN_IDENTITY
+export AUN_INSTALL_DIR
+export AUN_MODEL_PATH
+export AUN_PROMPT_CACHE
+export LLAMA_CLI
 
 .PHONY: check build package install reinstall clean-install model clean reset-accessibility
 

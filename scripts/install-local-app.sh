@@ -43,7 +43,7 @@ ditto "$source_bundle" "$install_path"
 xattr -dr com.apple.quarantine "$install_path" 2>/dev/null || true
 codesign --force --deep --sign "$codesign_identity" --entitlements app/Aun.entitlements "$install_path" >/dev/null
 
-if [[ -n "$llama_cli" ]]; then
+if [[ -n "$llama_cli" && -f "$model_path" ]]; then
   jq -n \
     --arg llama_cli "$llama_cli" \
     --arg model_path "$model_path" \
@@ -68,6 +68,8 @@ if [[ -n "$llama_cli" ]]; then
         max_typing_speed_cps: 8
       }
     }' >"$managed_config_path"
+elif [[ -n "$llama_cli" ]]; then
+  echo "install warning: model not found at $model_path; local LLM generation disabled" >&2
 fi
 
 open "$install_path"
