@@ -136,7 +136,7 @@ final class StatusBarController {
     @objc private func showAbout() {
         let alert = NSAlert()
         alert.messageText = "Aun"
-        alert.informativeText = "Aun – Local inline suggestion engine\nVersion 0.1.0"
+        alert.informativeText = "Aun – Local inline suggestion engine\nVersion 0.1.0-alpha\n\n⚠ Experimental – expect rough edges"
         alert.alertStyle = .informational
         if let iconURL = Bundle.main.url(forResource: "AunMark", withExtension: "png"),
            let icon = NSImage(contentsOf: iconURL)

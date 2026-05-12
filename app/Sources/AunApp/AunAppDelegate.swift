@@ -105,7 +105,7 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         pendingInlineSuggestion = work
-        let delayMs = min(managedConfig.policy.idleDebounceMs, 300)
+        let delayMs = managedConfig.policy.idleDebounceMs
         AunTelemetry.suggestionScheduled(delayMs: delayMs)
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delayMs), execute: work)
     }
@@ -229,7 +229,7 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
 
     private func startFocusedTextPolling() {
         focusedTextPollTimer?.invalidate()
-        focusedTextPollTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
+        focusedTextPollTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.observeFocusedTextChange()
             }

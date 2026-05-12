@@ -75,9 +75,9 @@ public struct ManagedConfig: Codable, Sendable {
     }
 
     public struct Policy: Codable, Sendable {
-        public var idleDebounceMs = 120
+        public var idleDebounceMs = 60
         public var minContextChars = 1
-        public var maxTypingSpeedCps = 8
+        public var maxTypingSpeedCps = 30
 
         enum CodingKeys: String, CodingKey {
             case idleDebounceMs = "idle_debounce_ms"
@@ -89,9 +89,9 @@ public struct ManagedConfig: Codable, Sendable {
 
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            idleDebounceMs = try container.decodeIfPresent(Int.self, forKey: .idleDebounceMs) ?? 120
+            idleDebounceMs = try container.decodeIfPresent(Int.self, forKey: .idleDebounceMs) ?? 60
             minContextChars = try container.decodeIfPresent(Int.self, forKey: .minContextChars) ?? 1
-            maxTypingSpeedCps = try container.decodeIfPresent(Int.self, forKey: .maxTypingSpeedCps) ?? 8
+            maxTypingSpeedCps = try container.decodeIfPresent(Int.self, forKey: .maxTypingSpeedCps) ?? 30
         }
     }
 }

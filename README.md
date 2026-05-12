@@ -10,7 +10,7 @@ It watches the focused text field through macOS Accessibility APIs, shows a quie
 
 ## Status
 
-Aun is early and experimental. The current build is intended for local testing on macOS, not production use.
+Aun is alpha software. Features, configuration format, and APIs may change without notice. Expect rough edges. Intended for local testing on macOS, not production use.
 
 ## Requirements
 

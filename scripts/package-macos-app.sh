@@ -47,7 +47,7 @@ cat >"$contents_dir/Info.plist" <<PLIST
   <key>CFBundleIconFile</key>
   <string>Aun.icns</string>
   <key>CFBundleShortVersionString</key>
-  <string>0.1.0</string>
+  <string>0.1.0-alpha</string>
   <key>CFBundleVersion</key>
   <string>1</string>
   <key>LSMinimumSystemVersion</key>
