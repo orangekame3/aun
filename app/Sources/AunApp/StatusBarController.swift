@@ -1,4 +1,5 @@
 import AppKit
+import AunSupport
 
 /// Manages the NSStatusItem that lives in the macOS menu bar.
 @MainActor
@@ -6,10 +7,19 @@ final class StatusBarController {
     private var statusItem: NSStatusItem?
     private var enabledMenuItem: NSMenuItem?
     private var onToggleEnabled: ((Bool) -> Void)?
+    private var settingsController: SettingsWindowController?
+    private var currentConfig: ManagedConfig = ManagedConfig()
+    private var onConfigChanged: ((ManagedConfig) -> Void)?
 
     private(set) var isSuggestionEnabled = true
 
-    func setup(onToggleEnabled: @escaping (Bool) -> Void) {
+    func setup(
+        config: ManagedConfig,
+        onToggleEnabled: @escaping (Bool) -> Void,
+        onConfigChanged: @escaping (ManagedConfig) -> Void
+    ) {
+        self.currentConfig = config
+        self.onConfigChanged = onConfigChanged
         self.onToggleEnabled = onToggleEnabled
 
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -108,34 +118,19 @@ final class StatusBarController {
     }
 
     @objc private func openSettings() {
-        let supportDir = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/Aun")
-        let configPath = supportDir.appendingPathComponent("managed-config.json")
-
-        // Create default config if it doesn't exist
-        if !FileManager.default.fileExists(atPath: configPath.path) {
-            try? FileManager.default.createDirectory(at: supportDir, withIntermediateDirectories: true)
-            if let examplePath = Bundle.main.path(forResource: "managed-config.example", ofType: "json"),
-               let exampleData = FileManager.default.contents(atPath: examplePath)
-            {
-                FileManager.default.createFile(atPath: configPath.path, contents: exampleData)
-            } else {
-                // Write minimal default config
-                let defaultJSON = """
-                {
-                  "inference": {},
-                  "privacy": {},
-                  "policy": {}
-                }
-                """
-                FileManager.default.createFile(
-                    atPath: configPath.path,
-                    contents: defaultJSON.data(using: .utf8)
-                )
-            }
+        if let existing = settingsController?.window, existing.isVisible {
+            existing.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
         }
 
-        NSWorkspace.shared.open(configPath)
+        let controller = SettingsWindowController(config: currentConfig) { [weak self] newConfig in
+            self?.currentConfig = newConfig
+            self?.onConfigChanged?(newConfig)
+        }
+        settingsController = controller
+        controller.showWindow(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     @objc private func showAbout() {

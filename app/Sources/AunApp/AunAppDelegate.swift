@@ -4,7 +4,7 @@ import AunSupport
 @MainActor
 final class AunAppDelegate: NSObject, NSApplicationDelegate {
     private let contextReader = AccessibilityContextReader()
-    private let managedConfig = ManagedConfigLoader.load()
+    private var managedConfig = ManagedConfigLoader.load()
     private let overlay = GhostOverlayPanel()
     private let statusBar = StatusBarController()
     private var keyboardMonitor: KeyboardMonitor?
@@ -19,14 +19,20 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         AunTelemetry.appStarted()
 
-        statusBar.setup { [weak self] enabled in
-            self?.suggestionEnabled = enabled
-            if !enabled {
-                self?.pendingInlineSuggestion?.cancel()
-                self?.generationTask?.cancel()
-                self?.hideSuggestion()
+        statusBar.setup(
+            config: managedConfig,
+            onToggleEnabled: { [weak self] enabled in
+                self?.suggestionEnabled = enabled
+                if !enabled {
+                    self?.pendingInlineSuggestion?.cancel()
+                    self?.generationTask?.cancel()
+                    self?.hideSuggestion()
+                }
+            },
+            onConfigChanged: { [weak self] newConfig in
+                self?.managedConfig = newConfig
             }
-        }
+        )
 
         if !AccessibilityPermissionController.ensureTrusted() {
             showStatus("Accessibility permission needed")

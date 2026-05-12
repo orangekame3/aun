@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ManagedConfig: Decodable, Sendable {
+public struct ManagedConfig: Codable, Sendable {
     public var inference = Inference()
     public var privacy = Privacy()
     public var policy = Policy()
@@ -20,7 +20,7 @@ public struct ManagedConfig: Decodable, Sendable {
         policy = try container.decodeIfPresent(Policy.self, forKey: .policy) ?? Policy()
     }
 
-    public struct Inference: Decodable, Sendable {
+    public struct Inference: Codable, Sendable {
         public var llamaCli = "llama-completion"
         public var modelPath = "models/gemma-4-E4B-it-Q4_K_M.gguf"
         public var promptCache: String? = "models/gemma-4-E4B-it.prompt-cache"
@@ -56,7 +56,7 @@ public struct ManagedConfig: Decodable, Sendable {
         }
     }
 
-    public struct Privacy: Decodable, Sendable {
+    public struct Privacy: Codable, Sendable {
         public var allowNetworkInference = false
         public var logTypedContent = false
 
@@ -74,7 +74,7 @@ public struct ManagedConfig: Decodable, Sendable {
         }
     }
 
-    public struct Policy: Decodable, Sendable {
+    public struct Policy: Codable, Sendable {
         public var idleDebounceMs = 120
         public var minContextChars = 1
         public var maxTypingSpeedCps = 8
@@ -97,6 +97,23 @@ public struct ManagedConfig: Decodable, Sendable {
 }
 
 public enum ManagedConfigLoader {
+    public static var userConfigURL: URL {
+        FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support/Aun/managed-config.json")
+    }
+
+    public static func save(_ config: ManagedConfig) throws {
+        let url = userConfigURL
+        try FileManager.default.createDirectory(
+            at: url.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let data = try encoder.encode(config)
+        try data.write(to: url, options: .atomic)
+    }
+
     public static func load(environment: [String: String] = ProcessInfo.processInfo.environment) -> ManagedConfig {
         if let path = environment["AUN_MANAGED_CONFIG"], !path.isEmpty {
             return load(path: path)
