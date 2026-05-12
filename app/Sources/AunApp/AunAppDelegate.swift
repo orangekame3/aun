@@ -6,6 +6,7 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
     private let contextReader = AccessibilityContextReader()
     private let managedConfig = ManagedConfigLoader.load()
     private let overlay = GhostOverlayPanel()
+    private let statusBar = StatusBarController()
     private var keyboardMonitor: KeyboardMonitor?
     private var pendingInlineSuggestion: DispatchWorkItem?
     private var permissionPollTimer: Timer?
@@ -13,9 +14,20 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
     private var lastFocusedTextKey: String?
     private var generationTask: Task<Void, Never>?
     private var typingTimestamps: [Date] = []
+    private var suggestionEnabled = true
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         AunTelemetry.appStarted()
+
+        statusBar.setup { [weak self] enabled in
+            self?.suggestionEnabled = enabled
+            if !enabled {
+                self?.pendingInlineSuggestion?.cancel()
+                self?.generationTask?.cancel()
+                self?.hideSuggestion()
+            }
+        }
+
         if !AccessibilityPermissionController.ensureTrusted() {
             showStatus("Accessibility permission needed")
             startPermissionPolling()
@@ -40,6 +52,10 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
 
     private func handle(_ action: KeyAction) {
         AunTelemetry.keyAction(action)
+
+        guard suggestionEnabled || action == .accept || action == .dismiss || action == .clear else {
+            return
+        }
 
         switch action {
         case .manualInvoke:
@@ -215,6 +231,7 @@ final class AunAppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func observeFocusedTextChange() {
+        guard suggestionEnabled else { return }
         guard let context = contextReader.readFocusedContext(typingSpeedCps: currentTypingSpeedCps()) else {
             hideSuggestion()
             return
