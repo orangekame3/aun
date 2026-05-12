@@ -26,6 +26,8 @@ mkdir -p "$macos_dir" "$resources_dir"
 cp "$binary_path" "$macos_dir/$bundle_name"
 cp protocol/managed-config.example.json "$resources_dir/managed-config.example.json"
 cp app/Aun.entitlements "$resources_dir/Aun.entitlements"
+cp app/Resources/Aun.icns "$resources_dir/Aun.icns"
+cp assets/brand/aun-mark.png "$resources_dir/AunMark.png"
 
 cat >"$contents_dir/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -40,6 +42,8 @@ cat >"$contents_dir/Info.plist" <<PLIST
   <string>$bundle_name</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
+  <key>CFBundleIconFile</key>
+  <string>Aun.icns</string>
   <key>CFBundleShortVersionString</key>
   <string>0.1.0</string>
   <key>CFBundleVersion</key>

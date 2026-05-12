@@ -39,9 +39,28 @@ Install and launch the local app:
 make install
 ```
 
+Rebuild from a clean app bundle and reinstall:
+
+```sh
+make clean-install
+```
+
 Then allow Aun in `System Settings > Privacy & Security > Accessibility`.
 
 Open TextEdit or another editable app, type a few characters, pause briefly, and press `Tab` to accept the suggestion.
+
+If Accessibility shows an old Aun entry or the permission does not seem to apply:
+
+```sh
+make reset-accessibility
+make clean-install
+```
+
+macOS does not allow apps to grant Accessibility permission automatically. For fewer permission resets during development, sign with a stable local code-signing identity:
+
+```sh
+AUN_CODESIGN_IDENTITY="Apple Development: Your Name (...)" make clean-install
+```
 
 ## Keyboard
 

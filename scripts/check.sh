@@ -10,6 +10,7 @@ bash -n scripts/check.sh
 bash -n scripts/download-model.sh
 bash -n scripts/install-local-app.sh
 bash -n scripts/package-macos-app.sh
+bash -n scripts/reset-accessibility.sh
 bash -n scripts/verify-app-bundle.sh
 
 swift build --package-path app

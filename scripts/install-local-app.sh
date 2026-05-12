@@ -13,9 +13,21 @@ managed_config_path="$support_dir/managed-config.json"
 model_path="${AUN_MODEL_PATH:-$repo_root/models/gemma-4-E4B-it-Q4_K_M.gguf}"
 prompt_cache="${AUN_PROMPT_CACHE:-$repo_root/models/gemma-4-E4B-it.prompt-cache}"
 llama_cli="${LLAMA_CLI:-}"
+codesign_identity="${AUN_CODESIGN_IDENTITY:-}"
 
 if [[ -z "$llama_cli" ]] && command -v llama-completion >/dev/null 2>&1; then
   llama_cli="$(command -v llama-completion)"
+fi
+
+if [[ -z "$codesign_identity" ]] && command -v security >/dev/null 2>&1; then
+  codesign_identity="$(
+    security find-identity -v -p codesigning 2>/dev/null \
+      | awk -F '"' '/"Aun Local Development"|Apple Development|Developer ID Application/ { print $2; exit }'
+  )"
+fi
+
+if [[ -z "$codesign_identity" ]]; then
+  codesign_identity="-"
 fi
 
 scripts/package-macos-app.sh
@@ -29,7 +41,7 @@ mkdir -p "$install_dir" "$support_dir"
 rm -rf "$install_path"
 ditto "$source_bundle" "$install_path"
 xattr -dr com.apple.quarantine "$install_path" 2>/dev/null || true
-codesign --force --deep --sign - --entitlements app/Aun.entitlements "$install_path" >/dev/null
+codesign --force --deep --sign "$codesign_identity" --entitlements app/Aun.entitlements "$install_path" >/dev/null
 
 if [[ -n "$llama_cli" ]]; then
   jq -n \
@@ -62,3 +74,12 @@ open "$install_path"
 
 echo "installed: $install_path"
 echo "config: $managed_config_path"
+echo "codesign: $codesign_identity"
+
+if [[ "$codesign_identity" == "-" ]]; then
+  cat <<'EOF'
+warning: using ad-hoc signing. macOS may treat each rebuild as a new app for
+Accessibility permission. For stable permissions, install a local code-signing
+identity and set AUN_CODESIGN_IDENTITY.
+EOF
+fi
