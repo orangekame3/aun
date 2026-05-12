@@ -1,0 +1,10 @@
+/dist/*
+!/dist/.gitkeep
+/app/.build/
+/.build/
+/models/*.gguf
+/models/*.bin
+/models/*.safetensors
+/models/*.prompt-cache
+/models/*.sha256
+.DS_Store

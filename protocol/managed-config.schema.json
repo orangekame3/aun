@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aun.local/protocol/managed-config.schema.json",
+  "title": "Aun Managed Configuration",
+  "type": "object",
+  "properties": {
+    "inference": {
+      "type": "object",
+      "properties": {
+        "llama_cli": { "type": "string", "default": "llama-completion" },
+        "model_path": {
+          "type": "string",
+          "default": "models/gemma-4-E4B-it-Q4_K_M.gguf"
+        },
+        "prompt_cache": {
+          "type": "string",
+          "default": "models/gemma-4-E4B-it.prompt-cache"
+        },
+        "context_size": { "type": "integer", "minimum": 1, "default": 4096 },
+        "max_tokens": { "type": "integer", "minimum": 1, "default": 24 },
+        "temperature": { "type": "number", "minimum": 0, "maximum": 2, "default": 0.2 },
+        "chat_template": { "type": "string", "default": "gemma" },
+        "gpu_layers": { "type": "integer", "minimum": 0, "default": 99 }
+      },
+      "additionalProperties": false
+    },
+    "privacy": {
+      "type": "object",
+      "properties": {
+        "allow_network_inference": { "type": "boolean", "default": false },
+        "log_typed_content": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "idle_debounce_ms": { "type": "integer", "minimum": 0, "default": 120 },
+        "min_context_chars": { "type": "integer", "minimum": 0, "default": 1 },
+        "max_typing_speed_cps": { "type": "integer", "minimum": 0, "default": 8 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
