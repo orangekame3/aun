@@ -16,9 +16,7 @@ final class StatusBarController {
         self.statusItem = statusItem
 
         if let button = statusItem.button {
-            if let iconURL = Bundle.main.url(forResource: "AunMark", withExtension: "png"),
-               let icon = NSImage(contentsOf: iconURL)
-            {
+            if let icon = loadStatusBarIcon() {
                 icon.size = NSSize(width: 18, height: 18)
                 icon.isTemplate = true
                 button.image = icon
@@ -39,6 +37,18 @@ final class StatusBarController {
         if let button = statusItem?.button {
             button.appearsDisabled = !enabled
         }
+    }
+
+    private func loadStatusBarIcon() -> NSImage? {
+        // Prefer dedicated status bar icon, fall back to app mark
+        for name in ["StatusBarIcon", "AunMark"] {
+            if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+               let image = NSImage(contentsOf: url)
+            {
+                return image
+            }
+        }
+        return nil
     }
 
     // MARK: - Menu

@@ -28,6 +28,8 @@ cp protocol/managed-config.example.json "$resources_dir/managed-config.example.j
 cp app/Aun.entitlements "$resources_dir/Aun.entitlements"
 cp app/Resources/Aun.icns "$resources_dir/Aun.icns"
 cp assets/brand/aun-mark.png "$resources_dir/AunMark.png"
+cp assets/brand/StatusBarIcon.png "$resources_dir/StatusBarIcon.png"
+cp assets/brand/StatusBarIcon@2x.png "$resources_dir/StatusBarIcon@2x.png"
 
 cat >"$contents_dir/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>

@@ -1,0 +1,44 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:aun}/app",
+            "name": "Debug AunApp (app)",
+            "target": "AunApp",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AunApp (app)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:aun}/app",
+            "name": "Release AunApp (app)",
+            "target": "AunApp",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AunApp (app)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:aun}/app",
+            "name": "Debug AunAppConfigCheck (app)",
+            "target": "AunAppConfigCheck",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AunAppConfigCheck (app)"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:aun}/app",
+            "name": "Release AunAppConfigCheck (app)",
+            "target": "AunAppConfigCheck",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AunAppConfigCheck (app)"
+        }
+    ]
+}

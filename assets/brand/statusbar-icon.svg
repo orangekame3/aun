@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+  <!--
+    Aun menu bar icon – magatama (勾玉)
+    macOS template image: black + transparency only.
+    The system auto-tints for light/dark mode.
+  -->
+  <!-- Magatama body: S-curve forming the filled half -->
+  <path fill="#000" fill-rule="evenodd" d="
+    M 9 1.5
+    A 3.75 3.75 0 0 1 9 9
+    A 3.75 3.75 0 0 0 9 16.5
+    A 7.5 7.5 0 0 0 9 1.5
+    Z
+    M 9 13.5
+    A 1.2 1.2 0 1 0 9 11.1
+    A 1.2 1.2 0 1 0 9 13.5
+    Z
+  "/>
+  <!-- Eye dot on the empty (left) side -->
+  <circle fill="#000" cx="9" cy="5.25" r="1.2"/>
+</svg>
