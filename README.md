@@ -30,13 +30,13 @@ nix develop
 Download the default Gemma GGUF:
 
 ```sh
-scripts/download-model.sh
+make model
 ```
 
 Install and launch the local app:
 
 ```sh
-scripts/install-local-app.sh
+make install
 ```
 
 Then allow Aun in `System Settings > Privacy & Security > Accessibility`.
@@ -56,13 +56,13 @@ Open TextEdit or another editable app, type a few characters, pause briefly, and
 Run checks:
 
 ```sh
-scripts/check.sh
+make check
 ```
 
 Build the app bundle:
 
 ```sh
-scripts/package-macos-app.sh
+make package
 ```
 
 ## Privacy
